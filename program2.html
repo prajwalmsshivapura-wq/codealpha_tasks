@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Orbit Calculator</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--night: #111827;
+			--panel: rgba(24, 34, 51, .88);
+			--display: #0b1220;
+			--key: #25334a;
+			--key-hover: #30425d;
+			--ink: #edf5ff;
+			--muted: #8ea0ba;
+			--line: rgba(193, 211, 234, .14);
+			--cyan: #61e7e3;
+			--orange: #ffb86b;
+		}
+
+		* { box-sizing: border-box; }
+		body {
+			display: grid;
+			min-height: 100vh;
+			margin: 0;
+			padding: 24px;
+			place-items: center;
+			color: var(--ink);
+			background: radial-gradient(circle at 15% 15%, #214058 0, transparent 34%), linear-gradient(135deg, #0b1020, var(--night) 55%, #1b2935);
+			font-family: "Space Grotesk", sans-serif;
+		}
+
+		.calculator { width: min(100%, 390px); }
+		.eyebrow { margin: 0 0 12px; color: var(--cyan); font-size: .72rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
+		h1 { margin: 0 0 18px; font-size: clamp(2rem, 8vw, 2.7rem); letter-spacing: -.06em; }
+		.body { padding: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 24px 70px rgba(0, 0, 0, .35); backdrop-filter: blur(16px); }
+		.display { min-height: 112px; padding: 18px; overflow: hidden; background: var(--display); border: 1px solid var(--line); border-radius: 12px; text-align: right; }
+		.expression { min-height: 25px; overflow-wrap: anywhere; color: var(--muted); font-family: "DM Mono", monospace; font-size: .9rem; }
+		.result { margin-top: 9px; overflow-x: auto; color: var(--ink); font-family: "DM Mono", monospace; font-size: clamp(2rem, 10vw, 2.8rem); font-weight: 500; line-height: 1.1; white-space: nowrap; scrollbar-width: thin; }
+		.keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+		button { min-height: 58px; padding: 0; color: var(--ink); background: var(--key); border: 1px solid transparent; border-radius: 10px; cursor: pointer; font: 500 1.1rem "Space Grotesk", sans-serif; transition: background .2s, border-color .2s, transform .2s; }
+		button:hover { background: var(--key-hover); border-color: rgba(255,255,255,.16); }
+		button:active { transform: scale(.96); }
+		button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+		.utility { color: var(--orange); background: rgba(255,184,107,.1); }
+		.operator { color: var(--cyan); background: rgba(97,231,227,.1); font-size: 1.4rem; }
+		.equals { color: #101c2c; background: var(--cyan); }
+		.equals:hover { background: #8af3ee; }
+		.zero { grid-column: span 2; }
+		.hint { margin: 14px 2px 0; color: var(--muted); font-size: .78rem; text-align: center; }
+		@media (max-width: 360px) { body { padding: 14px; } .body { padding: 14px; } button { min-height: 54px; } }
+	</style>
+</head>
+<body>
+	<main class="calculator" aria-label="Calculator">
+		<p class="eyebrow">Orbit / 01</p>
+		<h1>Quick calculations.</h1>
+		<section class="body">
+			<div class="display" aria-live="polite">
+				<div class="expression" id="expression">Ready</div>
+				<div class="result" id="result">0</div>
+			</div>
+			<div class="keys">
+				<button class="utility" data-action="clear" type="button">AC</button>
+				<button class="utility" data-action="backspace" type="button" aria-label="Backspace">⌫</button>
+				<button class="operator" data-value="/" type="button" aria-label="Divide">÷</button>
+				<button class="operator" data-value="*" type="button" aria-label="Multiply">×</button>
+				<button data-value="7" type="button">7</button><button data-value="8" type="button">8</button><button data-value="9" type="button">9</button><button class="operator" data-value="-" type="button">−</button>
+				<button data-value="4" type="button">4</button><button data-value="5" type="button">5</button><button data-value="6" type="button">6</button><button class="operator" data-value="+" type="button">+</button>
+				<button data-value="1" type="button">1</button><button data-value="2" type="button">2</button><button data-value="3" type="button">3</button><button class="equals" data-action="equals" type="button">=</button>
+				<button class="zero" data-value="0" type="button">0</button><button data-value="." type="button">.</button>
+			</div>
+			<p class="hint">Type with your keyboard · Enter to calculate · Esc to clear</p>
+		</section>
+	</main>
+
+	<script>
+		const expressionDisplay = document.getElementById("expression");
+		const resultDisplay = document.getElementById("result");
+		let expression = "";
+		let justCalculated = false;
+
+		function evaluate(value) {
+			const parts = value.match(/\d+(?:\.\d+)?|[+\-*/]/g);
+			if (!parts || parts.join("") !== value || /[+\-*/.]$/.test(value)) return null;
+			let total = Number(parts[0]);
+			for (let index = 1; index < parts.length; index += 2) {
+				const number = Number(parts[index + 1]);
+				if (parts[index] === "+") total += number;
+				if (parts[index] === "-") total -= number;
+				if (parts[index] === "*") total *= number;
+				if (parts[index] === "/") { if (number === 0) return null; total /= number; }
+			}
+			return Number.isFinite(total) ? String(Number(total.toFixed(10))) : null;
+		}
+
+		function render() {
+			expressionDisplay.textContent = expression || "Ready";
+			resultDisplay.textContent = expression ? (evaluate(expression) || expression) : "0";
+		}
+
+		function addValue(value) {
+			if (justCalculated && /[\d.]/.test(value)) expression = "";
+			justCalculated = false;
+			if (value === "." && /(?:^|[+\-*/])\d*\.\d*$/.test(expression)) return;
+			if (/[+\-*/]/.test(value) && /[+\-*/]$/.test(expression)) expression = expression.slice(0, -1);
+			expression += value;
+			render();
+		}
+
+		function calculate() {
+			if (!expression || /[+\-*/.]$/.test(expression)) return;
+			try {
+				const total = evaluate(expression);
+				if (total === null) throw new Error();
+				expressionDisplay.textContent = expression + " =";
+				resultDisplay.textContent = total;
+				expression = total;
+				justCalculated = true;
+			} catch { expressionDisplay.textContent = "Invalid calculation"; resultDisplay.textContent = "Try again"; expression = ""; }
+		}
+
+		function clear() { expression = ""; justCalculated = false; render(); }
+		document.querySelectorAll("button").forEach(button => button.addEventListener("click", () => {
+			if (button.dataset.action === "clear") clear();
+			else if (button.dataset.action === "backspace") { expression = expression.slice(0, -1); render(); }
+			else if (button.dataset.action === "equals") calculate();
+			else addValue(button.dataset.value);
+		}));
+		document.addEventListener("keydown", event => {
+			if (/^[0-9.+\-*/]$/.test(event.key)) addValue(event.key);
+			else if (event.key === "Enter" || event.key === "=") calculate();
+			else if (event.key === "Backspace") { expression = expression.slice(0, -1); render(); }
+			else if (event.key === "Escape") clear();
+		});
+	</script>
+</body>
+</html>

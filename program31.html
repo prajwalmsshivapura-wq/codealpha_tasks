@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prajwal M S — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --canvas: #EDEAD9;
+    --canvas-raised: #E3DFC8;
+    --ink: #1F2A1E;
+    --ink-soft: #52604A;
+    --line: #C7C0A3;
+    --green: #3E5C3A;
+    --ochre: #B96F1F;
+    --brick: #8B3A3A;
+    --card: #F6F4E8;
+    --focus: #3E5C3A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --canvas: #171B15;
+      --canvas-raised: #1D231A;
+      --ink: #EDE9D8;
+      --ink-soft: #AEB6A0;
+      --line: #3A4132;
+      --green: #86AE7C;
+      --ochre: #E0A855;
+      --brick: #D9836F;
+      --card: #1C2119;
+      --focus: #86AE7C;
+    }
+  }
+  :root[data-theme="dark"]{
+    --canvas: #171B15;
+    --canvas-raised: #1D231A;
+    --ink: #EDE9D8;
+    --ink-soft: #AEB6A0;
+    --line: #3A4132;
+    --green: #86AE7C;
+    --ochre: #E0A855;
+    --brick: #D9836F;
+    --card: #1C2119;
+    --focus: #86AE7C;
+  }
+  html{ scroll-behavior: smooth; scroll-padding-top: calc(64px + env(safe-area-inset-top, 0px)); }
+  *,*::before,*::after{ box-sizing: inherit; }
+  body{
+    margin:0;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -6px -6px;
+  }
+  a{ color: var(--green); }
+  a:focus-visible, button:focus-visible{ outline: 2px solid var(--focus); outline-offset: 3px; }
+  ::selection{ background: var(--ochre); color: #1F2A1E; }
+
+  .display{ font-family: 'Fraunces', Georgia, 'Times New Roman', serif; }
+
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+  .ledger{
+    position: relative;
+    padding-left: 34px;
+  }
+  .ledger::before{
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+  @media (max-width: 640px){
+    .ledger{ padding-left: 18px; }
+  }
+
+  header.site{
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: color-mix(in srgb, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .barrow{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 14px 24px;
+    max-width: 880px; margin: 0 auto;
+  }
+  .brand{ font-family:'Fraunces', serif; font-weight:600; font-size: 1.05rem; text-decoration:none; color: var(--ink); }
+  nav.links{ display:flex; gap: 22px; }
+  nav.links a{ color: var(--ink-soft); text-decoration:none; font-size: 0.92rem; }
+  nav.links a:hover{ color: var(--ink); }
+  .theme-btn{
+    border: 1px solid var(--line); background: transparent; color: var(--ink-soft);
+    width: 32px; height:32px; border-radius: 6px; cursor:pointer; font-size: 0.95rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .theme-btn:hover{ color: var(--ink); border-color: var(--ink-soft); }
+
+  .hero{ padding: 64px 0 40px; }
+  .coord{
+    font-size: 0.82rem; letter-spacing: 0.02em; color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 1.12;
+    margin: 0 0 20px;
+    max-width: 15ch;
+  }
+  .hero h1 .line{
+    display:block;
+    opacity: 0;
+    transform: translateY(14px);
+    animation: reveal 0.7s ease forwards;
+  }
+  .hero h1 .line:nth-child(1){ animation-delay: 0.05s; }
+  .hero h1 .line:nth-child(2){ animation-delay: 0.20s; }
+  .hero h1 .line:nth-child(3){ animation-delay: 0.35s; }
+  @keyframes reveal{ to{ opacity:1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce){
+    .hero h1 .line{ animation: none; opacity: 1; transform: none; }
+  }
+  .underline-svg{ display:block; margin: -6px 0 22px; height: 14px; width: 210px; max-width: 60%; }
+  .underline-svg path{
+    stroke: var(--ochre); stroke-width: 3; fill: none; stroke-linecap: round;
+    stroke-dasharray: 260; stroke-dashoffset: 260;
+    animation: draw 0.9s 0.6s ease forwards;
+  }
+  @media (prefers-reduced-motion: reduce){ .underline-svg path{ animation:none; stroke-dashoffset:0; } }
+  @keyframes draw{ to{ stroke-dashoffset: 0; } }
+
+  .hero p.lede{
+    max-width: 58ch;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    margin: 0 0 26px;
+  }
+  .contact-row{ display:flex; flex-wrap:wrap; gap: 10px 18px; }
+  .contact-row a{
+    text-decoration:none; color: var(--ink);
+    font-size: 0.92rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+  }
+  .contact-row a:hover{ border-color: var(--ochre); color: var(--ochre); }
+
+  section{ padding: 46px 0; border-top: 1px solid var(--line); }
+  .sec-head{ display:flex; align-items:baseline; gap: 12px; margin-bottom: 22px; }
+  .sec-num{ font-size: 0.82rem; color: var(--ink-soft); min-width: 22px; }
+  .sec-head h2{
+    font-family:'Fraunces', serif; font-weight: 500;
+    font-size: 1.5rem; margin: 0; color: var(--ink);
+  }
+
+  .about p{ max-width: 62ch; color: var(--ink-soft); margin: 0 0 14px; }
+  .about strong{ color: var(--ink); font-weight: 600; }
+
+  .project{
+    margin-bottom: 30px;
+    padding: 22px 24px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+  }
+  .project:last-child{ margin-bottom: 0; }
+  .project-top{ display:flex; align-items:baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .project h3{ font-family:'Fraunces', serif; font-weight: 600; font-size: 1.2rem; margin: 0; }
+  .project .tag{
+    font-size: 0.78rem; color: var(--brick); border: 1px solid currentColor; border-radius: 3px;
+    padding: 1px 7px;
+  }
+  .project .tagline{ color: var(--ink-soft); font-style: italic; margin: 2px 0 12px; font-family:'Fraunces', serif; }
+  .project p.desc{ margin: 0 0 14px; max-width: 66ch; }
+  .stack{ display:flex; flex-wrap:wrap; gap: 8px; }
+  .stack span{
+    font-size: 0.78rem; color: var(--ink-soft);
+    padding: 3px 9px; border: 1px solid var(--line); border-radius: 3px;
+  }
+
+  .skills-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 24px 40px; }
+  @media (max-width: 560px){ .skills-grid{ grid-template-columns: 1fr; } }
+  .skill-group h4{
+    font-size: 0.8rem; text-transform: none; color: var(--ink-soft);
+    margin: 0 0 8px; font-weight: 600;
+  }
+  .skill-group ul{ list-style:none; margin:0; padding:0; }
+  .skill-group li{
+    display:inline-block; margin: 0 8px 8px 0;
+    font-size: 0.92rem; color: var(--ink);
+    padding: 4px 10px; border: 1px solid var(--line); border-radius: 3px;
+    background: var(--canvas-raised);
+  }
+
+  .edu-item{ margin-bottom: 20px; }
+  .edu-item:last-child{ margin-bottom: 0; }
+  .edu-item .who{ font-weight:600; }
+  .edu-item .what{ color: var(--ink-soft); font-size: 0.95rem; }
+
+  footer{ padding: 30px 0 40px; }
+  footer .foot-row{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap: 10px;
+    color: var(--ink-soft); font-size: 0.85rem;
+  }
+
+  @media (max-width: 640px){
+    .barrow{ padding: 12px 18px; }
+    nav.links{ gap: 14px; }
+    nav.links a{ font-size: 0.82rem; }
+    .hero{ padding: 40px 0 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="barrow">
+    <a class="brand" href="#top">Prajwal M S</a>
+    <nav class="links">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button>
+  </div>
+</header>
+
+<main class="wrap ledger" id="top">
+
+  <section class="hero" style="border-top:none; padding-top:56px;">
+    <p class="coord">12.97°N, 77.59°E — Bengaluru, India</p>
+    <h1>
+      <span class="line">Software for the</span>
+      <span class="line">ground realities of</span>
+      <span class="line">Bengaluru's belt.</span>
+    </h1>
+    <svg class="underline-svg" viewBox="0 0 210 14" aria-hidden="true">
+      <path d="M2 9 C 40 2, 100 12, 208 4"/>
+    </svg>
+    <p class="lede">First-year Computer Science Engineering student at Atria Institute of Technology, building AI-driven platforms that connect Bengaluru's urban core with its rural belt — Devanahalli, Doddaballapur, Hoskote, Nelamangala, Anekal.</p>
+    <div class="contact-row">
+      <a href="mailto:prajwalmsshivapura@gmail.com">prajwalmsshivapura@gmail.com</a>
+      <a href="https://www.linkedin.com/in/prajwal-m-s45" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/prajwalmsshivapura-wq" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="sec-head"><span class="sec-num">01</span><h2>About</h2></div>
+    <p>I'm a first-year <strong>Computer Science Engineering</strong> student, passionate about problem-solving, web development, and building software that holds up outside a classroom. Most of what I build starts from a real gap I've noticed around Bengaluru — food that goes to waste while people go without, or land that sits unused while farmers look for buyers — and works backward into code.</p>
+    <p>I care about <strong>social impact and sustainability</strong>, and I like using AI where it actually removes friction for people, not where it's decoration.</p>
+  </section>
+
+  <section id="work">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Work</h2></div>
+
+    <div class="project">
+      <div class="project-top">
+        <h3>FoodBridge</h3>
+        <span class="tag">social impact</span>
+      </div>
+      <p class="tagline">Smart food waste reduction and redistribution, urban to rural.</p>
+      <p class="desc">Connects surplus food sources — restaurants, hostels, event venues — with NGOs and individuals who need it, using live location tracking and AI-driven waste prediction. Built with both halves of Bengaluru in mind: an Urban/Rural map toggle with region-specific analytics, Kannada-script support for the rural interface, and an SMS-first, low-bandwidth mode so it still works where connectivity doesn't.</p>
+      <div class="stack">
+        <span>AI prediction</span><span>Live location</span><span>Kannada UI</span><span>SMS-first</span>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="project-top">
+        <h3>PlaceAI</h3>
+        <span class="tag">ed-tech</span>
+      </div>
+      <p class="tagline">An AI placement training platform for engineering students.</p>
+      <p class="desc">Ten modules covering the full placement pipeline — resume analysis and building, mock interviews with feedback, coding practice, aptitude training, company-specific prep, an AI career advisor, skill assessment, and a placement dashboard. The visual language leans into a deep oceanic, liquid-glass look with Instrument Serif type — a deliberate move away from generic dark-mode UI.</p>
+      <div class="stack">
+        <span>Resume AI</span><span>Mock interviews</span><span>Coding practice</span><span>Career advisor</span>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="project-top">
+        <h3>AgroConnect</h3>
+        <span class="tag">agri-tech</span>
+      </div>
+      <p class="tagline">A digital bridge between farmers and land takers or investors.</p>
+      <p class="desc">Lets farmers list land or needs, and lets others find and lease farmland — built to promote direct connection, transparency, and better use of agricultural land, without a broker in between.</p>
+      <div class="stack">
+        <span>HTML</span><span>CSS</span><span>Bootstrap</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Skills</h2></div>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>Languages &amp; tools</h4>
+        <ul>
+          <li>Python</li><li>C</li><li>HTML</li><li>CSS</li><li>Bootstrap</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <h4>Spoken</h4>
+        <ul>
+          <li>English</li><li>Kannada</li><li>Hindi</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Education</h2></div>
+    <div class="edu-item">
+      <div class="who">Atria Institute of Technology</div>
+      <div class="what">B.Tech, Computer Science Engineering — Bengaluru, India</div>
+    </div>
+    <div class="edu-item">
+      <div class="who">SPSM INDP PU College</div>
+      <div class="what">PUC, Biology — 89% — Davanagere</div>
+    </div>
+  </section>
+
+  <section id="certs">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Certifications</h2></div>
+    <p style="color:var(--ink-soft); margin:0;">Participated in GDG Study Jams.</p>
+  </section>
+
+  <section id="contact">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Contact</h2></div>
+    <p style="color:var(--ink-soft); max-width:60ch;">Open to opportunities, collaborations, and conversations about building tech that reaches past the city limits.</p>
+    <div class="contact-row" style="margin-top:14px;">
+      <a href="mailto:prajwalmsshivapura@gmail.com">prajwalmsshivapura@gmail.com</a>
+      <a href="https://www.linkedin.com/in/prajwal-m-s45" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/prajwalmsshivapura-wq" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot-row">
+      <span>Prajwal M S · Bengaluru, India</span>
+      <span>Built with HTML &amp; CSS</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  (function(){
+    var btn = document.getElementById('themeToggle');
+    var root = document.documentElement;
+    var mql = window.matchMedia('(prefers-color-scheme: dark)');
+    function apply(mode){
+      if(mode === 'light' || mode === 'dark'){
+        root.setAttribute('data-theme', mode);
+      } else {
+        root.removeAttribute('data-theme');
+      }
+    }
+    try{
+      var saved = localStorage.getItem('theme-pref');
+      if(saved) apply(saved);
+    }catch(e){}
+    btn.addEventListener('click', function(){
+      var current = root.getAttribute('data-theme') || (mql.matches ? 'dark' : 'light');
+      var next = current === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try{ localStorage.setItem('theme-pref', next); }catch(e){}
+    });
+  })();
+</script>
+
+</body>
+</html>
